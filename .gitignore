@@ -133,10 +133,10 @@ venv.bak/
 .spyproject
 
 # Rope project settings
-.ropeproject
-
 # mkdocs documentation
 /site
+.ropeproject
+
 
 # mypy
 .mypy_cache/

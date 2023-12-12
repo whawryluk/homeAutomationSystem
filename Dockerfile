@@ -1,6 +1,12 @@
-FROM ubuntu:latest
-ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install apache2 curl -y
-HEALTHCHECK CMD curl -f http://localhost/ || exit 1
-EXPOSE 80
-ENTRYPOINT ["apache2ctl", "-D", "FOREGROUND"]
+FROM python:3.8
+
+WORKDIR /code
+
+COPY ./app /code/app
+COPY requirements.txt /code/
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 5000
+
+ENV NAME coolenv

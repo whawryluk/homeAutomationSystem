@@ -20,6 +20,8 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "6666:5432"
 
   grafana:
     image: grafana/grafana:latest

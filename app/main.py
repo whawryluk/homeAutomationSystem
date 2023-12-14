@@ -4,6 +4,7 @@ from logging.handlers import RotatingFileHandler
 import os
 from flask import Flask, escape
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from faker import Faker
 import click
 from app.config import Config
@@ -12,6 +13,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 fake = Faker()
 
 if not os.path.exists('logs'):
@@ -44,6 +46,7 @@ class WeatherData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     temperature = db.Column(db.Float)
     humidity = db.Column(db.Float)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     def __repr__(self):
         return f'<WeatherData {self.temperature}, {self.humidity}>'

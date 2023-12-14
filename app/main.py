@@ -1,3 +1,4 @@
+import datetime
 import logging
 import random
 from logging.handlers import RotatingFileHandler
@@ -34,8 +35,10 @@ def populate_db(entries):
     for _ in range(entries):
         temperature = round(fake.pyfloat(min_value=20, max_value=50, right_digits=2), 2)
         humidity = round(fake.pyfloat(min_value=0, max_value=100, right_digits=2), 2)
+        created_at = fake.date_time_between(start_date='-5m', end_date='now')
 
-        weather_data = WeatherData(temperature=temperature, humidity=humidity)
+        weather_data = WeatherData(temperature, humidity, created_at)
+
         db.session.add(weather_data)
 
     db.session.commit()
@@ -43,13 +46,18 @@ def populate_db(entries):
 
 
 class WeatherData(db.Model):
+    def __init__(self, temperature, humidity, created_at):
+        self.temperature = temperature
+        self.humidity = humidity
+        self.created_at = created_at if created_at is not None else datetime.datetime.utcnow()
+
     id = db.Column(db.Integer, primary_key=True)
     temperature = db.Column(db.Float)
     humidity = db.Column(db.Float)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     def __repr__(self):
-        return f'<WeatherData {self.temperature}, {self.humidity}>'
+        return f'<WeatherData {self.temperature}, {self.humidity}, {self.created_at}>'
 
 
 @app.get("/temperature")
